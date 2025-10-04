@@ -12,6 +12,7 @@ const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute");
+const errorController = require("./controllers/errorController")
 
 /* ***********************
  * View Engine and Templates
@@ -31,12 +32,25 @@ app.get("/", baseController.buildHome)
 // Inventory routes
 app.use("/inv", inventoryRoute)
 
+// Intentional error route
+app.get("/trigger-error", errorController.triggerError)
+
 /* ***********************
  * Local Server Information
  * Values from .env (environment) file
  *************************/
 const port = process.env.PORT
 const host = process.env.HOST
+
+// Error handling middleware
+app.use((req, res, next) => {
+  const error = new Error("Page Not Found");
+  error.status = 404;
+  next(error);
+});
+
+const errorHandler = require("./utilities/errorHandler");
+app.use(errorHandler);
 
 /* ***********************
  * Log statement to confirm server operation
