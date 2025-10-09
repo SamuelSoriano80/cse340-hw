@@ -1,0 +1,41 @@
+<h1>
+    <%= title %>
+</h1>
+
+<!-- Flash Message -->
+<% if (locals.notice) { %>
+    <div class="flash-message">
+        <p>
+            <%= message %>
+        </p>
+    </div>
+    <% } %>
+
+        <!-- Registration Form -->
+        <form action="/account/register" method="post" class="login-form">
+            <label for="first_name">First Name</label>
+            <input type="text" id="account_firstname" name="account_firstname"
+                value="<%= typeof locals.first_name !== 'undefined' ? locals.first_name : '' %>"
+                placeholder="Enter your first name" required>
+
+            <label for="last_name">Last Name</label>
+            <input type="text" id="account_lastname" name="account_lastname"
+                value="<%= typeof locals.last_name !== 'undefined' ? locals.last_name : '' %>"
+                placeholder="Enter your last name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="account_email" name="account_email"
+                value="<%= typeof locals.email !== 'undefined' ? locals.email : '' %>" placeholder="Enter your email"
+                required>
+
+            <label for="password">Password</label>
+            <input type="password" id="account_password" name="account_password" placeholder="Create a strong password" required
+                pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{12,}$"
+                title="Password must be at least 12 characters long, contain 1 uppercase letter, 1 number, and 1 special character.">
+
+            <button type="submit" class="btn-login">Register</button>
+        </form>
+
+        <p class="register-link">
+            Already have an account? <a href="/account/login">Login here</a>
+        </p>
