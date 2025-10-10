@@ -10,6 +10,16 @@
         </p>
     </div>
     <% } %>
+    
+<% if (errors) { %>
+    <ul class="notice">
+        <% errors.array().forEach(error=> { %>
+            <li>
+                <%= error.msg %>
+            </li>
+            <% }) %>
+    </ul>
+    <% } %>
 
         <!-- Registration Form -->
         <form action="/account/register" method="post" class="login-form">

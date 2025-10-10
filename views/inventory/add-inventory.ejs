@@ -1,0 +1,115 @@
+<h1>Add New Vehicle</h1>
+
+<% if (message && message.message) { %>
+    <div class="flash-message <%= message.type || 'info' %>">
+        <%= message.message %>
+    </div>
+    <% } %>
+
+        <form action="/inv/add-inventory" method="post" class="inventory-form">
+            <div class="form-group">
+                <label for="classification_id">Classification:</label>
+                <%- classificationList %>
+                    <% if (errors && errors.classification_id) { %>
+                        <div class="error-message">
+                            <%= errors.classification_id %>
+                        </div>
+                        <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_make">Make:</label>
+                <input type="text" id="inv_make" name="inv_make" required maxlength="50" <% if (inv_make) { %> value="
+                <%= inv_make %>" <% } %>
+                        >
+                        <% if (errors && errors.inv_make) { %>
+                            <div class="error-message">
+                                <%= errors.inv_make %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_model">Model:</label>
+                <input type="text" id="inv_model" name="inv_model" required maxlength="50" <% if (inv_model) { %>
+                value="<%= inv_model %>" <% } %>
+                        >
+                        <% if (errors && errors.inv_model) { %>
+                            <div class="error-message">
+                                <%= errors.inv_model %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_description">Description:</label>
+                <textarea id="inv_description" name="inv_description" required
+                    rows="4"><% if (inv_description) { %><%= inv_description %><% } %></textarea>
+                <% if (errors && errors.inv_description) { %>
+                    <div class="error-message">
+                        <%= errors.inv_description %>
+                    </div>
+                    <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_image">Image Path:</label>
+                <input type="text" id="inv_image" name="inv_image" value="/images/vehicles/no-image.png" required>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_thumbnail">Thumbnail Path:</label>
+                <input type="text" id="inv_thumbnail" name="inv_thumbnail" value="/images/vehicles/no-image-tn.png"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_prices">Price:</label>
+                <input type="number" id="inv_prices" name="inv_prices" step="0.01" required value="<%= typeof inv_prices !== 'undefined' ? inv_prices.toString().trim() : '' %>"
+    >
+    <% if (errors && errors.inv_prices) { %>
+        <div class="error-message">
+            <%= errors.inv_prices %>
+        </div>
+    <% } %>
+</div>
+
+            <div class="form-group">
+                <label for="inv_year">Year:</label>
+                <input type="number" id="inv_year" name="inv_year" min="1900" max="2030" required <% if (inv_year) { %>
+                value="<%= inv_year %>" <% } %>
+                        >
+                        <% if (errors && errors.inv_year) { %>
+                            <div class="error-message">
+                                <%= errors.inv_year %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_miles">Miles:</label>
+                <input type="number" id="inv_miles" name="inv_miles" required <% if (inv_miles) { %> value="<%=
+                    inv_miles %>" <% } %>
+                        >
+                        <% if (errors && errors.inv_miles) { %>
+                            <div class="error-message">
+                                <%= errors.inv_miles %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_color">Color:</label>
+                <input type="text" id="inv_color" name="inv_color" required maxlength="20" <% if (inv_color) { %>
+                value="<%= inv_color %>" <% } %>
+                        >
+                        <% if (errors && errors.inv_color) { %>
+                            <div class="error-message">
+                                <%= errors.inv_color %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Vehicle</button>
+            <a href="/inv" class="btn btn-secondary">Cancel</a>
+        </form>
