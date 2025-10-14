@@ -17,6 +17,9 @@ const errorController = require("./controllers/errorController")
 const session = require("express-session")
 const pool = require('./database/')
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
+const utilities = require("./utilities/")
+
 
 /* ***********************
  * Middleware
@@ -41,6 +44,9 @@ app.use(function(req, res, next){
   res.locals.messages = require('express-messages')(req, res)
   next()
 })
+
+app.use(cookieParser())
+app.use(utilities.checkJWTToken)
 
 /* ***********************
  * View Engine and Templates

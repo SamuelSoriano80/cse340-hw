@@ -1,0 +1,21 @@
+<h1><%= title %></h1>
+
+<% if (notice && notice.length> 0) { %>
+    <div class="flash-message">
+        <%= notice %>
+    </div>
+    <% } %>
+
+<% if (errors) { %>
+    <div class="errors">
+        <% errors.forEach(error=> { %>
+            <p>
+                <%= error.msg %>
+            </p>
+            <% }) %>
+    </div>
+    <% } %>
+
+<p>
+    <%= message %>
+</p>

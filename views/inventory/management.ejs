@@ -19,3 +19,18 @@
                 <a href="/inv/add-inventory" class="btn btn-primary">Add New Vehicle</a>
             </div>
         </div>
+    
+    <div class="management-card">
+        <h2>Manage Inventory</h2>
+        <p>Choose a classification to see those inventory items</p>
+        <div class="form-group">
+            <%- classificationSelect %>
+        </div>
+        <div id="inventoryTableContainer">
+            <table id="inventoryDisplay" class="inventory-table"></table>
+        </div>
+    </div>
+
+    <noscript>Javascript must be enabled to use this page.</noscript>
+
+    <script src="../../js/inventory.js"></script>

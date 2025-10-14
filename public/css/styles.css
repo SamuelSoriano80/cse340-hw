@@ -362,6 +362,20 @@ footer {
   padding: 0 1rem;
 }
 
+#inventoryTableContainer {
+  margin-top: 1rem;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .hero {
