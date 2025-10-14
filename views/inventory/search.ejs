@@ -1,0 +1,50 @@
+<h1>
+    <%= title %>
+</h1>
+
+<form action="/inv/search" method="POST" class="search-form">
+    <div>
+        <label for="minPrice">Min Price:</label>
+        <input type="number" name="minPrice" id="minPrice" value="<%= search.minPrice || 0 %>" required>
+    </div>
+    <div>
+        <label for="maxPrice">Max Price:</label>
+        <input type="number" name="maxPrice" id="maxPrice" value="<%= search.maxPrice || 999999 %>" required>
+    </div>
+    <div>
+        <label for="color">Color:</label>
+        <input type="text" name="color" id="color" value="<%= search.color || '' %>">
+    </div>
+    <div>
+        <label for="minMiles">Min Miles:</label>
+        <input type="number" name="minMiles" id="minMiles" value="<%= search.minMiles || 0 %>" required>
+    </div>
+    <div>
+        <label for="maxMiles">Max Miles:</label>
+        <input type="number" name="maxMiles" id="maxMiles" value="<%= search.maxMiles || 999999 %>" required>
+    </div>
+    <input type="submit" value="Search Vehicles">
+</form>
+
+<hr>
+
+<% if (vehicles.length> 0) { %>
+    <h2>Results:</h2>
+    <ul class="vehicle-results">
+        <% vehicles.forEach(vehicle=> { %>
+            <li>
+                <a href="/inv/detail/<%= vehicle.inv_id %>">
+                    <strong>
+                        <%= vehicle.inv_make %>
+                            <%= vehicle.inv_model %>
+                    </strong> -
+                    $<%= vehicle.inv_prices.toLocaleString() %> -
+                        <%= vehicle.inv_color %> -
+                            <%= vehicle.inv_miles.toLocaleString() %> miles
+                </a>
+            </li>
+            <% }) %>
+    </ul>
+    <% } else if (vehicles) { %>
+        <p>No vehicles found for your criteria.</p>
+        <% } %>

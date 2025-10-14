@@ -427,5 +427,34 @@ invCont.deleteInventory = async function(req, res, next) {
   }
 };
 
+invCont.buildSearchPage = async function(req, res, next) {
+  let nav = await utilities.getNav();
+  res.render("inventory/search", {
+    title: "Search Vehicles",
+    nav,
+    vehicles: [],
+    search: {}
+  });
+}
+
+invCont.handleSearch = async function(req, res, next) {
+  let nav = await utilities.getNav();
+  const { minPrice, maxPrice, color, minMiles, maxMiles } = req.body;
+
+  const vehicles = await invModel.searchVehicles({
+    minPrice,
+    maxPrice,
+    color,
+    minMiles,
+    maxMiles
+  });
+
+  res.render("inventory/search", {
+    title: "Search Vehicles",
+    nav,
+    vehicles,
+    search: { minPrice, maxPrice, color, minMiles, maxMiles }
+  });
+}
 
   module.exports = invCont

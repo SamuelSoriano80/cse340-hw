@@ -158,5 +158,28 @@ async function deleteInventoryItem(inv_id) {
   }
 }
 
+async function searchVehicles({ minPrice, maxPrice, color, minMiles, maxMiles }) {
+  try {
+    const sql = `
+      SELECT * FROM inventory
+      WHERE inv_prices BETWEEN $1 AND $2
+        AND inv_miles BETWEEN $3 AND $4
+        AND ($5 = '' OR inv_color ILIKE $5)
+      ORDER BY inv_make, inv_model
+    `;
+    const values = [
+      minPrice || 0,
+      maxPrice || 9999999,
+      minMiles || 0,
+      maxMiles || 9999999,
+      color || ''
+    ];
+    const result = await pool.query(sql, values);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in searchVehicles:", error);
+    return [];
+  }
+}
 
-module.exports = {getClassifications, getInventoryByClassificationId, getVehicleById, addClassification, addInventory, updateInventory, deleteInventoryItem};
+module.exports = {getClassifications, getInventoryByClassificationId, getVehicleById, addClassification, addInventory, updateInventory, deleteInventoryItem, searchVehicles};

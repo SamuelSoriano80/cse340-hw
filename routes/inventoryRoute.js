@@ -57,5 +57,15 @@ router.post('/delete', utilities.checkAccountType, async (req, res, next) => {
   }
 });
 
+// Search routes
+router.get(
+  "/search", 
+  utilities.handleErrors(invController.buildSearchPage)
+);
+
+router.post(
+  "/search", 
+  utilities.handleErrors(invController.handleSearch)
+);
 
 module.exports = router;
