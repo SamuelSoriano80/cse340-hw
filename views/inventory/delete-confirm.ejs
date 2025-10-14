@@ -1,0 +1,61 @@
+<h1>Delete Vehicle</h1>
+
+<% if (message && message.message) { %>
+    <div class="flash-message <%= message.type || 'info' %>">
+        <%= message.message %>
+    </div>
+    <% } %>
+
+        <form id="deleteForm" action="/inv/delete" method="post" class="inventory-form">
+
+            <div class="form-group">
+                <label for="inv_make">Make:</label>
+                <input type="text" id="inv_make" name="inv_make" required maxlength="50" <% if (inv_make) { %> value="<%= inv_make %>" <% } %> readonly>
+                        <% if (errors && errors.inv_make) { %>
+                            <div class="error-message">
+                                <%= errors.inv_make %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_model">Model:</label>
+                <input type="text" id="inv_model" name="inv_model" required maxlength="50" <% if (inv_model) { %>
+                value="<%= inv_model %>" <% } %>
+                        readonly>
+                        <% if (errors && errors.inv_model) { %>
+                            <div class="error-message">
+                                <%= errors.inv_model %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <div class="form-group">
+                <label for="inv_prices">Price:</label>
+                <input type="number" id="inv_prices" name="inv_prices" step="0.01" required value="<%= typeof inv_prices !== 'undefined' ? inv_prices.toString().trim() : '' %>"
+    readonly>
+    <% if (errors && errors.inv_prices) { %>
+        <div class="error-message">
+            <%= errors.inv_prices %>
+        </div>
+    <% } %>
+</div>
+
+            <div class="form-group">
+                <label for="inv_year">Year:</label>
+                <input type="number" id="inv_year" name="inv_year" min="1900" max="2030" required <% if (inv_year) { %>
+                value="<%= inv_year %>" <% } %>
+                        readonly>
+                        <% if (errors && errors.inv_year) { %>
+                            <div class="error-message">
+                                <%= errors.inv_year %>
+                            </div>
+                            <% } %>
+            </div>
+
+            <p>Confirm Deletion - This action is permanent.</p>
+
+            <button type="submit" class="btn btn-primary">Delete Vehicle</button>
+            <input type="hidden" name="inv_id" value="<%= inv_id %>">
+            <a href="/inv" class="btn btn-secondary">Cancel</a>
+        </form>

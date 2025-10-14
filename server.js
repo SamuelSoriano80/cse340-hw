@@ -47,6 +47,7 @@ app.use(function(req, res, next){
 
 app.use(cookieParser())
 app.use(utilities.checkJWTToken)
+app.use(utilities.handleSessionData)
 
 /* ***********************
  * View Engine and Templates

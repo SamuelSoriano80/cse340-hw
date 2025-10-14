@@ -33,4 +33,29 @@ router.post(
   utilities.handleErrors(accountController.accountLogin)
 )
 
+router.get("/logout", (req, res) => {
+  res.clearCookie("jwt", { httpOnly: true, secure: process.env.NODE_ENV !== "development" });
+
+  req.flash("notice", "You have been logged out successfully.");
+  res.redirect("/");
+});
+
+router.get(
+  "/update/:account_id",
+  utilities.checkLogin,
+  utilities.handleErrors(accountController.buildUpdateAccount)
+)
+
+router.post(
+  "/update",
+  utilities.checkLogin,
+  utilities.handleErrors(accountController.updateAccount)
+)
+
+router.post(
+  "/update-password", 
+  utilities.checkLogin, 
+  utilities.handleErrors(accountController.updateAccountPassword)
+)
+
 module.exports = router

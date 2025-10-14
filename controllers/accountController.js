@@ -123,13 +123,30 @@ async function accountLogin(req, res) {
 * **************************************** */
 const buildAccountManagement = async function (req, res, next) {
   let nav = await utilities.getNav()
+  const accountData = res.locals.accountData
   try {
     const flashMessage = req.flash("notice")
+    let welcomeMessage = `<h2>Welcome ${accountData.account_firstname}</h2>`
+
+    let content = `
+      ${welcomeMessage}
+      <p><a href="/account/update/${accountData.account_id}" title="Update your account information">Update Account Information</a></p>
+    `
+    
+    // Show inventory management link only for Employee/Admin
+    if (accountData.account_type === "Employee" || accountData.account_type === "Admin") {
+      content += `
+        <h3>Inventory Management</h3>
+        <p><a href="/inv/" title="Go to Inventory Management">Manage Inventory</a></p>
+      `
+    }
+
     res.render("account/management", {
       title: "Account Management",
       nav,
-      message: "You're logged in",
       notice: flashMessage,
+      content,
+      accountData,
       errors: null,
     })
   } catch (err) {
@@ -137,4 +154,102 @@ const buildAccountManagement = async function (req, res, next) {
   }
 }
 
-module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement }
+/* ***************************
+ *  Build Update Account View
+ * ************************** */
+const buildUpdateAccount = async function (req, res, next) {
+  let nav = await utilities.getNav()
+  const account_id = parseInt(req.params.account_id)
+  const accountData = res.locals.accountData
+
+  // Security check: prevent updating someone else’s account
+  if (accountData.account_id !== account_id) {
+    req.flash("notice", "You can only update your own account.")
+    return res.redirect("/account/management")
+  }
+
+  res.render("account/update", {
+    title: "Update Account Information",
+    nav,
+    accountData
+  })
+}
+
+const updateAccount = async function (req, res, next) {
+  const { account_id, account_firstname, account_lastname, account_email } = req.body;
+  const nav = await utilities.getNav();
+  const accountData = res.locals.accountData;
+
+  if (accountData.account_id !== account_id) {
+    req.flash("notice", "You can only update your own account.");
+    return res.redirect("/account/");
+  }
+
+  const errors = [];
+
+  if (!account_firstname) errors.push({ msg: "First name is required." });
+  if (!account_lastname) errors.push({ msg: "Last name is required." });
+  if (!account_email) errors.push({ msg: "Email is required." });
+
+  // Check if email is already in use by another account
+  const existingAccount = await accountModel.getAccountByEmail(account_email);
+  if (existingAccount && existingAccount.account_id !== parseInt(account_id)) {
+    errors.push({ msg: "Email is already in use." });
+  }
+
+  if (errors.length > 0) {
+    return res.render("account/update", {
+      title: "Update Account Information",
+      nav,
+      accountData: { account_id, account_firstname, account_lastname, account_email },
+      errors,
+      message: null
+    });
+  }
+
+  const result = await accountModel.updateAccount(account_id, account_firstname, account_lastname, account_email);
+
+  if (result) {
+    req.flash("notice", "Account information updated successfully.");
+    res.redirect("/account/");
+  } else {
+    req.flash("notice", "Error updating account.");
+    res.redirect(`/account/update/${account_id}`);
+  }
+};
+
+const updateAccountPassword = async function (req, res, next) {
+  const { account_id, account_password } = req.body;
+  const loggedInAccount = res.locals.accountData;
+  const nav = await utilities.getNav();
+
+  if (loggedInAccount.account_id !== parseInt(account_id)) {
+    req.flash("notice", "You can only change your own password.");
+    return res.redirect("/account/");
+  }
+
+  if (!account_password || !/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{12,}$/.test(account_password)) {
+    req.flash("notice", "Password must be at least 12 characters long and include an uppercase letter, a number, and a special character.");
+    return res.redirect(`/account/update/${account_id}`);
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(account_password, 10);
+    const result = await accountModel.updatePassword(account_id, hashedPassword);
+
+    if (result) {
+      req.flash("notice", "Password updated successfully.");
+    } else {
+      req.flash("notice", "Error updating password.");
+    }
+  } catch (error) {
+    console.error("Error updating password:", error);
+    req.flash("notice", "An error occurred while updating the password.");
+  }
+
+  res.redirect("/account/");
+};
+
+
+
+module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement, buildUpdateAccount, updateAccount, updateAccountPassword }

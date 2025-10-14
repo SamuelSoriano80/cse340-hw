@@ -152,4 +152,35 @@ Util.checkJWTToken = (req, res, next) => {
   }
  }
 
+/* ****************************************
+ *  Make login state available to all views
+ * **************************************** */
+Util.handleSessionData = (req, res, next) => {
+  if (typeof res.locals.loggedin === "undefined") {
+    res.locals.loggedin = false
+  }
+  if (typeof res.locals.accountData === "undefined") {
+    res.locals.accountData = null
+  }
+  next()
+}
+
+/* ****************************************
+ *  Check if user is Employee or Admin
+ * **************************************** */
+Util.checkAccountType = (req, res, next) => {
+  if (res.locals.loggedin && res.locals.accountData) {
+    const { account_type } = res.locals.accountData
+    if (account_type === "Employee" || account_type === "Admin") {
+      return next()
+    } else {
+      req.flash("notice", "Access denied. Employees or Admins only.")
+      return res.redirect("/account/login")
+    }
+  } else {
+    req.flash("notice", "Please log in to access that page.")
+    return res.redirect("/account/login")
+  }
+}
+
 module.exports = Util

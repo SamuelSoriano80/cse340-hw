@@ -12,29 +12,50 @@ router.get("/type/:classificationId", invController.buildByClassificationId);
 router.get("/detail/:inv_id", invController.buildByInvId);
 
 // Management view route
-router.get('/', invController.buildManagement)
+router.get('/', utilities.checkAccountType, invController.buildManagement)
 
 // Classification routes
-router.get('/add-classification', invController.buildAddClassification)
-router.post('/add-classification', invController.addClassification)
+router.get('/add-classification', utilities.checkAccountType, invController.buildAddClassification)
+router.post('/add-classification', utilities.checkAccountType, invController.addClassification)
 
 // Add inventory routes
-router.get('/add-inventory', invController.buildAddInventory)
-router.post('/add-inventory', invController.addInventory)
+router.get('/add-inventory', utilities.checkAccountType, invController.buildAddInventory)
+router.post('/add-inventory', utilities.checkAccountType, invController.addInventory)
 
-router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+router.get("/getInventory/:classification_id", utilities.checkAccountType, utilities.handleErrors(invController.getInventoryJSON))
 
 // Display edit inventory view
 router.get(
   "/edit/:inv_id",
+  utilities.checkAccountType,
   utilities.handleErrors(invController.editInventoryView)
 );
 
 router.post(
     "/update",
+    utilities.checkAccountType,
     invValidate.newInventoryRules(),
     invValidate.checkUpdateData, 
     utilities.handleErrors(invController.updateInventory)
 );
+
+// Deliver delete confirmation view
+router.get('/delete/:inv_id', utilities.checkAccountType, async (req, res, next) => {
+  try {
+    await invController.buildDeleteView(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Process the deletion
+router.post('/delete', utilities.checkAccountType, async (req, res, next) => {
+  try {
+    await invController.deleteInventory(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 module.exports = router;
